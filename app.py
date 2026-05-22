@@ -2,9 +2,9 @@ import streamlit as st
 import os
 
 # Sahifa dizayni va sarlavhasi
-st.set_page_config(page_title="Temperatura shkalalari testlar to`plami", page_icon="*")
-st.title(" Mavzu: Temperatura shkalalari")
-st.subheader("Mavzu: Temperatura. Temperatura shkalalari va termometrlar")
+st.set_page_config(page_title="Temperatura va issiqlik hodisalari", page_icon="🌡️")
+st.title("🌡️ Ovozli test: Temperatura va issiqlik hodisalari")
+st.subheader("9-sinf Fizika: Molekulyar fizika bo'limi")
 st.write("Savollarni eshitish uchun ovoz pleyeridan foydalaning va to'g'ri javobni tanlang.")
 
 # Siz yuborgan 10 ta test savoli va kalit bo'yicha to'g'ri javoblari
