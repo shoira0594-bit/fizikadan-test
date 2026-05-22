@@ -8,7 +8,7 @@ st.title(" Temperatura va issiqlik hodisalari")
 st.subheader("9-sinf Fizika: O'quvchilar bilimini tekshirish")
 
 # 🔴 SHU YERGA WEB3FORMS'DAN OLGAN KALITINGIZNI QO'YING:
-WEB3FORMS_KEY = "f17cd28d-df64-4399-8ee1-96021b647209"
+WEB3FORMS_KEY = f17cd28d-df64-4399-8ee1-96021b647209
 
 # 10 ta test savollari bazasi
 savollar = [
