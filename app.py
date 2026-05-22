@@ -1,14 +1,10 @@
 import streamlit as st
 import os
-import requests
 
 # Sahifa dizayni va sarlavhasi
 st.set_page_config(page_title="Temperatura va issiqlik hodisalari", page_icon="🌡️")
 st.title(" Temperatura va issiqlik hodisalari")
 st.subheader("9-sinf Fizika: O'quvchilar bilimini tekshirish")
-
-# 🔴 SHU YERGA WEB3FORMS'DAN OLGAN KALITINGIZNI QO'YING:
-WEB3FORMS_KEY = "f17cd28d-df64-4399-8ee1-96021b647209"
 
 # 10 ta test savollari bazasi
 savollar = [
@@ -70,23 +66,22 @@ savollar = [
         "id": 10,
         "savol": "Temperatura modda zarrachalarining qaysi harakatini xarakterlaydi?",
         "variantlar": ["A) Zarrachalarning tartibsiz, issiqlik harakati o'rtacha kinetik energiyasini.", "B) Zarrachalarning faqat tartibli harakat tezligini.", "C) Moddaning umumiy potensial energiyasini.", "D) Zarrachalar o'rtasidagi o'zaro ta'sir kuchlarini."],
-        "togri_javob": "B) Zarrachalarning faqat tartibli harakat tezligini."
+        "togri_javob": "B) Zarralarning faqat tartibli harakat tezligini."
     }
 ]
 
-# Tizimga kirish qismi (O'quvchi ma'lumotlari)
-st.sidebar.header("🔐 Ro'yxatdan o'tish")
+# Tizimga kirish qismi (Faqat Ism va Sinf)
+st.sidebar.header("📝 O'quvchi ma'lumotlari")
 o_ism = st.sidebar.text_input("Ism va Familiyangiz:")
 o_sinf = st.sidebar.text_input("Sinfingiz (Masalan: 9-A):")
-o_email = st.sidebar.text_input("Elektron pochtangiz (Email):")
 
-if not o_ism or not o_sinf or not o_email:
-    st.warning("👈 Testni boshlash uchun chap tomondagi menyuda Ism, Sinf va Emailingizni to'liq kiriting!")
+if not o_ism or not o_sinf:
+    st.warning("👈 Testni boshlash uchun chap tomondagi menyuda Ism va Sinfingizni kiriting!")
 else:
-    st.success(f"Omad tilaymiz, {o_ism}! Testni boshlashingiz mumkin.")
+    st.success(f"Omad tilaymiz, {o_ism}! Test savollarini tinglang va javoblarni belgilang.")
     
     # Test shakli
-    with st.form(key='fizika_pochta_test_form'):
+    with st.form(key='fizika_sodda_test_form'):
         foydalanuvchi_javoblari = {}
         
         for s in savollar:
@@ -97,43 +92,31 @@ else:
             if os.path.exists(audio_path):
                 st.audio(audio_path, format='audio/mp3')
             else:
-                st.warning(f"⚠️ audio_files/savol_{s['id']}.mp3 topilmadi.")
+                st.warning(f"⚠️ audio_files papkasida 'savol_{s['id']}.mp3' topilmadi.")
                 
             tanlov = st.radio("Javob varianti:", s['variantlar'], key=f"radio_{s['id']}")
             foydalanuvchi_javoblari[s['id']] = tanlov
             st.markdown("---")
             
-        submit_button = st.form_submit_button(label="Testni yakunlash va natijani yuborish")
+        submit_button = st.form_submit_button(label="Testni yakunlash va natijani ko'rish")
 
-    # Natija hisoblash va pochtaga jo'natish
+    # Natija chiqarish
     if submit_button:
         ball = 0
-        batafsil_xat = f"O'quvchi: {o_ism}\nSinf: {o_sinf}\nEmail: {o_email}\n\nNatijalar:\n"
+        st.subheader("📊 Imtihon Natijasi:")
+        st.write(f"**O'quvchi:** {o_ism}")
+        st.write(f"**Sinf:** {o_sinf}")
         
+        # Savollarni tekshirish natijasi
         for s in savollar:
             if foydalanuvchi_javoblari[s['id']] == s['togri_javob']:
                 ball += 1
-                batafsil_xat += f"{s['id']}-savol: To'g'ri (+)\n"
+                st.write(f"✅ {s['id']}-savol: To'g'ri")
             else:
-                batafsil_xat += f"{s['id']}-savol: Noto'g'ri (-) [Belgiladi: {foydalanuvchi_javoblari[s['id']]}]\n"
+                st.write(f"❌ {s['id']}-savol: Noto'g'ri (Siz belgiladingiz: {foydalanuvchi_javoblari[s['id']]})")
                 
-        batafsil_xat += f"\nUmumiy ball: {ball} / 10"
+        st.markdown("---")
+        st.success(f"### Umumiy natija: Siz 10 ta savoldan {ball} tasiga to'g'ri javob berdingiz! 🎉")
         
-        # Web3Forms orqali o'qituvchi pochtasiga xat yuborish
-        payload = {
-            "access_key": WEB3FORMS_KEY,
-            "subject": f"Yangi natija: {o_ism} ({o_sinf}) - {ball} ball",
-            "name": "Fizika Ovozli Test Bot",
-            "message": batafsil_xat
-        }
-        
-        try:
-            response = requests.post("https://api.web3forms.com/submit", data=payload)
-            if response.status_code == 200:
-                st.success(f"🎉 Rahmat, {o_ism}! Test yakunlandi. Siz 10 tadan {ball} ta to'g'ri topdingiz. Natijangiz o'qituvchiga yuborildi!")
-                if ball == 10:
-                    st.balloons()
-            else:
-                st.error("Xat yuborishda xatolik yuz berdi, kalitni tekshiring.")
-        except Exception as e:
-            st.error(f"Aloqa xatoligi: {e}")
+        if ball == 10:
+            st.balloons()
